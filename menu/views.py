@@ -1,14 +1,12 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import Http404
-from django.utils import timezone
-from operator import attrgetter
 from datetime import datetime
 from django.core.exceptions import ObjectDoesNotExist
 from .models import *
 from .forms import *
 
 def menu_list(request):
-    menus = Menu.objects.filter(expiration_date__gte=timezone.now())
+    menus = Menu.objects.prefetch_related('items').filter(expiration_date__lte=timezone.now())
     return render(request, 'menu/list_all_current_menus.html', {'menus': menus})
 
 def menu_detail(request, pk):
